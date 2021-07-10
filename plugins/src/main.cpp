@@ -8,54 +8,62 @@
 #include "plugin.hpp"
 
 
-namespace pe {
-    
-    template<typename T>
-    using deleted_unique_ptr = std::unique_ptr<T, std::function<void(T*)>>;
-    using entry_point = plugin*(*)();
+template<typename T>
+using shared_obj_ptr = std::unique_ptr<T, std::function<void(T*)>>;
+using entry_point    = pe::plugin* (*)();
+namespace fs         = std::filesystem;
 
-    constexpr auto usage {
-        "Usage: application path_to_directory"
-    };
 
-    inline bool is_valid_path(const char* path) {
-        return std::filesystem::exists(path);
-    }
-} // namespace pe
+constexpr auto dll_extension { ".dll" };
+constexpr auto usage         { "Usage: application path_to_directory" };
+
+
+inline bool is_path_valid(const char* path, std::error_code& ec) noexcept {
+    return fs::exists(path, ec);
+}
 
 
 int main(int argc, char **argv) {
-    if(argc != 2 || pe::is_valid_path(argv[1])) {
-        std::cout << pe::usage << '\n';
-        return EXIT_FAILURE;
+    if(std::error_code ec;
+       argc != 2 || !is_path_valid(argv[1], ec)) {
+        std::wcerr << "Invalid parameters\n" 
+                   << usage << '\n';
+        return ec.value();
     }
 
-
-
-    auto dll_handle { ::LoadLibrary(TEXT("mylib.dll")) };
-    if (!dll_handle) {
-        std::cerr << "Unable to load DLL!\n";
-        return EXIT_FAILURE;
-    }
-
-    auto get_instance {
-        reinterpret_cast<pe::entry_point>(::GetProcAddress(dll_handle, "create_object"))
-    };
-
-    if (!get_instance) {
-        std::cerr << "Unable to load create_object from DLL!\n";
-        ::FreeLibrary(dll_handle);
-        return EXIT_FAILURE;
-    }
-
-    pe::deleted_unique_ptr<pe::plugin> p_plugin {
-        get_instance(),
-        [dll_handle] (pe::plugin* p) {
-            p->release();
-            ::FreeLibrary(dll_handle);
+    fs::path dll_path { argv[1] };
+    for (const auto& library : fs::directory_iterator(dll_path)) {
+        if(!library.is_regular_file() ||
+            dll_extension != library.path().extension()) {
+            continue;
         }
-    };
-    p_plugin->execute();
+
+        auto dll_handle { ::LoadLibrary(TEXT(library.path().string().c_str())) };
+        if (!dll_handle) {
+            std::wcerr << "Unable to load DLL: "
+                       << library.path() << '\n';
+            continue;
+        }
+
+        auto create_object {
+            reinterpret_cast<entry_point>(::GetProcAddress(dll_handle, "create_object"))
+        };
+
+        if (!create_object) {
+            std::wcerr << "Unable to load create_object from DLL!\n";
+            ::FreeLibrary(dll_handle);
+            continue;
+        }
+
+        shared_obj_ptr<pe::plugin> plugin {
+            create_object(),
+            [dll_handle] (pe::plugin* p) {
+                p->release();
+                ::FreeLibrary(dll_handle);
+            }
+        };
+        plugin->execute();
+    }
 
     return EXIT_SUCCESS;
 }
