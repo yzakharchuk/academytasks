@@ -4,10 +4,8 @@
 #include "plugin.hpp"
 
 
-#ifdef BIRD_API
+#ifndef BIRD_API
 #define BIRD_API extern "C" __declspec(dllimport)
-#else
-#define BIRD_API extern "C" __declspec(dllexport)
 #endif  // BIRD_API
 
 
