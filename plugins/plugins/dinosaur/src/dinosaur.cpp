@@ -1,7 +1,7 @@
-#define DINOSAUR_API extern "C" __declspec(dllexport)
-
-#include "dinosaur.hpp"
 #include <iostream>
+
+#define DINOSAUR_API extern "C" __declspec(dllexport)
+#include "dinosaur.hpp"
 
 
 DINOSAUR_API pe::plugin* create_object() {

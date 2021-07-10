@@ -1,7 +1,7 @@
-#define KANGAROO_API extern "C" __declspec(dllexport)
-
-#include "kangaroo.hpp"
 #include <iostream>
+
+#define KANGAROO_API extern "C" __declspec(dllexport)
+#include "kangaroo.hpp"
 
 
 KANGAROO_API pe::plugin* create_object() {

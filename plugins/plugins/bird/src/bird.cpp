@@ -1,7 +1,7 @@
-#define BIRD_API extern "C" __declspec(dllexport)
-
-#include "bird.hpp"
 #include <iostream>
+
+#define BIRD_API extern "C" __declspec(dllexport)
+#include "bird.hpp"
 
 
 BIRD_API pe::plugin* create_object() {
