@@ -18,4 +18,6 @@ ENDIF()
 
 
 ADD_SUBDIRECTORY(plugins/bird)
+ADD_SUBDIRECTORY(plugins/dinosaur)
+ADD_SUBDIRECTORY(plugins/kangaroo)
 ADD_SUBDIRECTORY(src)
