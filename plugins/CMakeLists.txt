@@ -3,7 +3,7 @@ PROJECT(plugins VERSION 1.0 LANGUAGES CXX)
 
 SET(CMAKE_CXX_STANDARD 17)
 ADD_COMPILE_OPTIONS(                  
-        -Wall
+        /W4
 )
 
 # Using standard-only C++ features
