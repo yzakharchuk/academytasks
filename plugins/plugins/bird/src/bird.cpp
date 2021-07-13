@@ -5,7 +5,7 @@
 
 
 BIRD_API pe::plugin* create_object() {
-    return reinterpret_cast<pe::plugin*>(new bird::bird_plugin());
+    return new bird::bird_plugin();
 }
 
 

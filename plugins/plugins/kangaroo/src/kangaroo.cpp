@@ -5,7 +5,7 @@
 
 
 KANGAROO_API pe::plugin* create_object() {
-    return reinterpret_cast<pe::plugin*>(new kangaroo::kangaroo_plugin());
+    return new kangaroo::kangaroo_plugin();
 }
 
 

@@ -5,7 +5,7 @@
 
 
 DINOSAUR_API pe::plugin* create_object() {
-    return reinterpret_cast<pe::plugin*>(new dinosaur::dinosaur_plugin());
+    return new dinosaur::dinosaur_plugin();
 }
 
 
