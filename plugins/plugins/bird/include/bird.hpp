@@ -13,7 +13,7 @@ namespace bird {
 
     struct bird_plugin : public pe::plugin {
         bird_plugin();
-        ~bird_plugin() override;
+        ~bird_plugin();
 
         void execute() const override;
         void release() override;

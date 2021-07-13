@@ -13,7 +13,7 @@ namespace kangaroo {
 
     struct kangaroo_plugin : public pe::plugin {
         kangaroo_plugin();
-        ~kangaroo_plugin() override;
+        ~kangaroo_plugin();
 
         void execute() const override;
         void release() override;

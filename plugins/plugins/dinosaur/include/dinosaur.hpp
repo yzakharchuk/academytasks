@@ -13,7 +13,7 @@ namespace dinosaur {
 
     struct dinosaur_plugin : public pe::plugin {
         dinosaur_plugin();
-        ~dinosaur_plugin() override;
+        ~dinosaur_plugin();
 
         void execute() const override;
         void release() override;
